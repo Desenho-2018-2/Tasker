@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  dev:
+    build:
+      context: . 
+      dockerfile: dockers/dev/Dockerfile 
+    volumes:
+        - .:/home
+  
+
