@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-## update ubuntu 
+## update ubuntu
 RUN apt-get update && apt-get upgrade -y
 
 ## install dependencies
@@ -12,6 +12,11 @@ RUN apt-get install \
 
 WORKDIR /home
 
-## set up rabbitmq-server
-RUN rabbitmq-server
+## add requirements.txt file
+ADD requirements.txt .
 
+## install requirements
+RUN pip3 install -r requirements.txt
+
+## set up rabbitmq-server
+CMD ["rabbitmq-server"]
