@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  dev:
+    build:
+      context: . 
+      dockerfile: dockers/dev/Dockerfile 
+    volumes:
+        - .:/home
+    ports:
+        - 8080:8080  # All usage
+        - 5000:5000  # For flask 
