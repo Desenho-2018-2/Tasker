@@ -1,32 +1,35 @@
-from rest_framework.decorators import api_view
+import logging
+
 from Orders.serializers import OrdersSerializer
-from rest_framework.response import Response
+from Orders.models import Order
 from rest_framework import status
-import logging 
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-@api_view(['POST', 'GET'])
-def insert_order(request):
+class CRUDOrder(APIView):
     """
-    Insert a order in database
+    This is the CRUD for Order models.
     """
 
-    logging.debug("The function insert_orders has this data \
-                    {}".format(request.data))
-
-    if request.method == 'GET':
-        return Response('consegui')
-
-    elif request.method == 'POST':
-
-        serializer = OrdersSerializer(data=request.data)
-
-        if serializer.is_valid():
-            logging.debug("The data is valid")
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            logging.warn("The post method don't work: {}".format(request.data))
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+       
+        order_serializer = OrdersSerializer(data=request.data)
         
-    
-    
+        if orders_serializer.is_valid():
+            logging.debug("The order is valid with the data {}".format(request.data))
+            orders_serializer.save()
+
+            return Response("Registrado")
+
+        else:
+
+            logging.debug("The order has failed with the data {}".format(request.data))
+            return Response(orders_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, format=None):
+
+        orders = Order.objects.all()
+        orders_serialized = OrdersSerializer(orders, many=True)
+        
+        return Response(orders_serialized.data)
+

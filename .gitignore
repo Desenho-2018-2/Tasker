@@ -2,3 +2,4 @@
 .env/
 __pycache__/
 teste_env/
+tasker/db.sqlite3

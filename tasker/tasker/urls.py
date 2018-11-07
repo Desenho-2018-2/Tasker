@@ -19,5 +19,5 @@ from Orders import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('insert_orders/', views.insert_order),
+    path('insert_orders/', views.CRUDOrder.as_view()),
 ]
