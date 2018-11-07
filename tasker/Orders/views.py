@@ -12,8 +12,13 @@ class CRUDOrder(APIView):
     """
 
     def post(self, request, format=None):
+        """
+        Insert a order in a database
+        """
        
-        order_serializer = OrdersSerializer(data=request.data)
+        orders_serializer = OrdersSerializer(data=request.data)
+
+        logging.warn(orders_serializer)
         
         if orders_serializer.is_valid():
             logging.debug("The order is valid with the data {}".format(request.data))
@@ -27,6 +32,9 @@ class CRUDOrder(APIView):
             return Response(orders_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
+        """
+        Get all orders in database
+        """
 
         orders = Order.objects.all()
         orders_serialized = OrdersSerializer(orders, many=True)
