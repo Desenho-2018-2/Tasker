@@ -5,8 +5,9 @@ services:
     build:
       context: . 
       dockerfile: dockers/dev/Dockerfile 
+    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8080"
     volumes:
-        - .:/home
+        - ./tasker/:/home
     ports:
         - 8080:8080  # All usage
-        - 5000:5000  # For flask 
+        - 5000:5000  # A extra port
