@@ -21,3 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('insert_orders/', views.CRUDOrder.as_view()),
 ]
+

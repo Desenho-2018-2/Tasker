@@ -7,4 +7,3 @@ urlpatterns = [
     path('insert_order/', views.insert_order),
 ]
 
-# urlpatterns = format_suffix_patterns(urlpatterns)

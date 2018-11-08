@@ -1,10 +1,12 @@
 import logging
+import json
 
-from Orders.serializers import OrdersSerializer
 from Orders.models import Order
+from Orders.serializers import OrdersSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.http import Http404
 
 class CRUDOrder(APIView):
     """
@@ -20,9 +22,12 @@ class CRUDOrder(APIView):
 
         if orders_serializer.is_valid():
             logging.debug("The order is valid with the data {}".format(request.data))
-            orders_serializer.save()
+            order_object = orders_serializer.save()
 
-            return Response("Registrado")
+            json_response = json.dumps({"order_id":order_object.id},
+                                       separators=(':', ',')) 
+
+            return Response(json_response)
 
         else:
 
@@ -39,3 +44,25 @@ class CRUDOrder(APIView):
         
         return Response(orders_serialized.data)
 
+    def delete(self, request, format=None):
+        """
+        Delete a order in the database
+        """
+        
+        pk = request.data['delete_order_id']
+
+        order_object = self.get_order(pk)
+        order_object.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get_order(self, pk):
+        """
+        Return a order from the database
+        """
+    
+        Order.objects.get(pk=pk)
+        try:
+            return Order.objects.get(pk=pk)
+        except:
+            raise Http404
