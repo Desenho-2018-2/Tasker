@@ -18,8 +18,6 @@ class CRUDOrder(APIView):
        
         orders_serializer = OrdersSerializer(data=request.data)
 
-        logging.warn(orders_serializer)
-        
         if orders_serializer.is_valid():
             logging.debug("The order is valid with the data {}".format(request.data))
             orders_serializer.save()
