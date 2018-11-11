@@ -2,12 +2,14 @@ import json
 import logging
 import abc
 
+from Orders import models
 from Orders.models import Order
 from Orders.serializers import OrdersSerializer
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+ 
 
 class CRUDOrder(APIView):
     """
@@ -66,12 +68,17 @@ class CRUDOrder(APIView):
         """
         Update a order in database
         """
+
         pk = request.data['order_id']
 
         order_object = get_order(pk)
 
         order_object.state = update_state(order_object.state)
+
         order_object.save()
+
+        logging.debug("Order {} updated".format(pk))
+        return Response("Order with id {} update successful!".format(pk))
 
 
 def get_order(pk):
@@ -92,12 +99,21 @@ def return_queue():
 
     return orders
 
+# TODO create a factory to do this
 def update_state(state):
-    if state == 'ERROR':
-        return CancelState.handle()
+    
+    map_handle = {models.WAITING_CONST : WaitState,
+     models.COOKING_CONST : CookingState,
+     models.DONE_CONST : DoneState,
+     models.PICKIT_CONST : PickitState,
+     models.CLOSE_CONST : CloseState,
+     models.ERROR_CONST : CancelState}
 
+    handle_object = map_handle[state]
+    
+    return handle_object().handle()
 
-class Statetaclass=abc.ABCMeta):
+class State(metaclass=abc.ABCMeta):
     """
     Define an interface for encapsulating the behavior associated with a
     particular state of the Context.
@@ -117,5 +133,30 @@ class CancelState(State):
     """
 
     def handle(self):
-        pass
+        return models.ERROR_CONST
+
+class WaitState(State):
+    """
+    Implement a behavior associated with a state of the Context.
+    """
+
+    def handle(self):
+        return models.COOKING_CONST
+
+class CookingState(State):  
+    def handle(self):
+        return models.DONE_CONST
+
+class DoneState(State):
+    def handle(self):
+        return models.PICKIT_CONST
+
+class PickitState(State):
+    def handle(self):
+        return models.CLOSE_CONST 
+
+class CloseState(State):
+
+    def handle(self):
+        return models.CLOSE_CONST
 

@@ -3,6 +3,8 @@ from django.db import models
 WAITING_CONST = 'WAIT'
 COOKING_CONST = 'COOK'
 DONE_CONST = 'DONE'
+PICKIT_CONST = 'PICKIT'
+CLOSE_CONST = 'CLOSE'
 ERROR_CONST = 'ERR'
 
 DRINK_TYPE = 'DRINK'
@@ -16,6 +18,8 @@ class Order(models.Model):
     ORDER_STATUS = ((WAITING_CONST, 'WAITING'),
                     (COOKING_CONST, 'COOKING'),
                     (DONE_CONST, 'DONE'),
+                    (PICKIT_CONST, 'PICKIT'),
+                    (CLOSE_CONST, 'CLOSE'),
                     (ERROR_CONST, 'ERROR'))
 
     ORDER_TYPE = ((DRINK_TYPE, 'DRINK'),
