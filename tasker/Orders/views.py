@@ -1,12 +1,12 @@
-import logging
 import json
+import logging
 
 from Orders.models import Order
 from Orders.serializers import OrdersSerializer
+from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.http import Http404
 
 class CRUDOrder(APIView):
     """
@@ -17,52 +17,64 @@ class CRUDOrder(APIView):
         """
         Insert a order in a database
         """
-       
+
         orders_serializer = OrdersSerializer(data=request.data)
 
         if orders_serializer.is_valid():
-            logging.debug("The order is valid with the data {}".format(request.data))
+            logging.debug("The order is valid with the data {}"\
+                          .format(request.data))
+
             order_object = orders_serializer.save()
 
             json_response = json.dumps({"order_id":order_object.id},
-                                       separators=(':', ',')) 
+                                       separators=(':', ','))
 
             return Response(json_response)
 
         else:
 
-            logging.debug("The order has failed with the data {}".format(request.data))
-            return Response(orders_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            logging.debug("The order has failed with the data {}" \
+                          .format(request.data))
+
+            return Response(orders_serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
         """
         Get all orders in database
         """
 
-        orders = Order.objects.all()
+        orders = return_queue()
         orders_serialized = OrdersSerializer(orders, many=True)
-        
+
         return Response(orders_serialized.data)
 
     def delete(self, request, format=None):
         """
         Delete a order in the database
         """
-        
+
         pk = request.data['delete_order_id']
 
-        order_object = self.get_order(pk)
+        order_object = get_order(pk)
         order_object.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def get_order(self, pk):
-        """
-        Return a order from the database
-        """
-    
-        Order.objects.get(pk=pk)
-        try:
-            return Order.objects.get(pk=pk)
-        except:
-            raise Http404
+def get_order(pk):
+    """
+    Return a order from the database
+    """
+
+    Order.objects.get(pk=pk)
+
+    try:
+        return Order.objects.get(pk=pk)
+    except:
+        raise Http404
+
+def return_queue():
+
+    orders = Order.objects.filter(order_type="FOOD").order_by('state', 'time', 'table', 'date')
+
+    return orders
