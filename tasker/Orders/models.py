@@ -5,7 +5,7 @@ COOKING_CONST = 'COOK'
 DONE_CONST = 'DONE'
 PICKIT_CONST = 'PICKIT'
 CLOSE_CONST = 'CLOSE'
-ERROR_CONST = 'ERR'
+CANCEL_CONST = 'CANCEL'
 
 DRINK_TYPE = 'DRINK'
 FOOD_TYPE = 'FOOD'
@@ -20,7 +20,7 @@ class Order(models.Model):
                     (DONE_CONST, 'DONE'),
                     (PICKIT_CONST, 'PICKIT'),
                     (CLOSE_CONST, 'CLOSE'),
-                    (ERROR_CONST, 'ERROR'))
+                    (CANCEL_CONST, 'CANCEL'))
 
     ORDER_TYPE = ((DRINK_TYPE, 'DRINK'),
                   (FOOD_TYPE, 'FOOD'))

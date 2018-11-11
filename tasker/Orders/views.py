@@ -60,7 +60,10 @@ class CRUDOrder(APIView):
         pk = request.data['delete_order_id']
 
         order_object = get_order(pk)
-        order_object.delete()
+
+        order_object.state = CancelState().handle()
+
+        order_object.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -107,7 +110,7 @@ def update_state(state):
      models.DONE_CONST : DoneState,
      models.PICKIT_CONST : PickitState,
      models.CLOSE_CONST : CloseState,
-     models.ERROR_CONST : CancelState}
+     models.CANCEL_CONST : CancelState}
 
     handle_object = map_handle[state]
     
@@ -133,7 +136,7 @@ class CancelState(State):
     """
 
     def handle(self):
-        return models.ERROR_CONST
+        return models.CANCEL_CONST
 
 class WaitState(State):
     """
