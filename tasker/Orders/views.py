@@ -1,5 +1,6 @@
 import json
 import logging
+import abc
 
 from Orders.models import Order
 from Orders.serializers import OrdersSerializer
@@ -61,6 +62,18 @@ class CRUDOrder(APIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def put(self, request, format=None):
+        """
+        Update a order in database
+        """
+        pk = request.data['order_id']
+
+        order_object = get_order(pk)
+
+        order_object.state = update_state(order_object.state)
+        order_object.save()
+
+
 def get_order(pk):
     """
     Return a order from the database
@@ -78,3 +91,31 @@ def return_queue():
     orders = Order.objects.filter(order_type="FOOD").order_by('state', 'time', 'table', 'date')
 
     return orders
+
+def update_state(state):
+    if state == 'ERROR':
+        return CancelState.handle()
+
+
+class Statetaclass=abc.ABCMeta):
+    """
+    Define an interface for encapsulating the behavior associated with a
+    particular state of the Context.
+    """
+
+    @abc.abstractmethod
+    def handle(self):
+        pass
+
+    def cancel(self):
+        return 'ERROR'
+
+
+class CancelState(State):
+    """
+    Implement a behavior associated with a state of the Context.
+    """
+
+    def handle(self):
+        pass
+
