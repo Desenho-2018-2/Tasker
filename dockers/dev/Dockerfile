@@ -1,14 +1,9 @@
-FROM ubuntu:16.04
+FROM alpine:3.7
 
-## update ubuntu
-RUN apt-get update --fix-missing && apt-get upgrade -y
-
-## install dependencies
-RUN apt-get install \
+RUN apk add --update \  
         python3-dev \
-        python3 \
-        vim \
-        python3-pip -y
+        py-pip \
+        bash 
 
 WORKDIR /home
 
