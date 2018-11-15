@@ -9,7 +9,6 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
- 
 
 class CRUDOrder(APIView):
     """
@@ -163,3 +162,44 @@ class CloseState(State):
     def handle(self):
         return models.CLOSE_CONST
 
+
+class OrderTarget:
+    pass
+
+
+class OrderObserver:
+
+    def __init__(self):
+        self.__observers = []
+
+    def notify(self):
+        """
+        Notify all observers
+        """
+        
+        for observer in observers:
+            observer.notify()
+
+   def attach(self, observer):
+        """
+        Register a new observer
+        """
+    
+        if observer not in self.__observers:
+            self.__observers.append(observer)
+
+   def detach(self, observer):
+        """
+        Remove a observer from the observer list
+        """
+
+        message = None
+
+        try:
+            self.__observers.remove(observer)
+            message = "Observer removed!"
+        except ValueError:
+            logging.warn("Someone try delete a observer not registered")
+            message = "Observer don't exists"
+
+        return Response(message)
