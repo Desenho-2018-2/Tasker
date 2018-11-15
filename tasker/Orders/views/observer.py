@@ -3,11 +3,11 @@ import logging
 from rest_framework import status
 from rest_framework.response import Response
 
-class OrderTarget:
+class OrderObserver:
     pass
 
 
-class OrderObserver:
+class OrderTarget:
     """
     Register, attach and detach observers
     """
@@ -28,11 +28,15 @@ class OrderObserver:
         Register a new observer
         """
     
+        response_status = None
+    
         if observer not in self.__observers:
             self.__observers.append(observer)
-            return Response(status=status.HTTP_201_CREATED)
+            response_status = status.HTTP_201_CREATE
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            response_status = status=status.HTTP_400_BAD_REQUEST
+
+        return Response(status=response_status)
 
     def detach(self, observer):
         """
@@ -51,9 +55,9 @@ class OrderObserver:
 
         except ValueError:
 
-            logging.warn("Someone try delete a observer not registered")
-
             message = "Observer don't exists"
             code = status.HTTP_400_BAD_REQUEST
+
+            logging.warn("Someone try delete a observer not registered")
 
         return Response(message, status=code)
