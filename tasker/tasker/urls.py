@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Orders import views
+from Orders.views import CRUDOrder
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('insert_orders/', views.CRUDOrder.as_view()),
+    path('insert_orders/', CRUDOrder.as_view()),
 ]
 
