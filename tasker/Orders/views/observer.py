@@ -1,12 +1,16 @@
 import logging
+import json
 
+from Orders.serializers import ObserverSerializer
+from abc import ABC, abstractmethod
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from abc import ABC, abstractmethod
 
-class TargetObserver(ABC):
-    
+class AbstractTarget(ABC):
+    """
+    Define a abstract with the methods for the target
+    """
     @abstractmethod
     def attach(self):
         """
@@ -14,13 +18,13 @@ class TargetObserver(ABC):
         """
         pass
 
-    @abstracmethod
+    @abstractmethod
     def detach(self):
         """
         Remove a observer
         """
         pass
-    
+
     @abstractmethod
     def notify(self):
         """
@@ -28,7 +32,7 @@ class TargetObserver(ABC):
         """
         pass
 
-class Observer(ABC):
+class AbstractObserver(ABC):
 
     @abstractmethod
     def update(self):
@@ -37,7 +41,7 @@ class Observer(ABC):
         """
         pass
 
-class Target(TargetObserver):
+class Target(AbstractTarget):
     """
     Base interface for target observer
     """
@@ -57,9 +61,9 @@ class Target(TargetObserver):
             self.__observers.append(observer)
 
             return True
-    
+
         else:
-        
+
             logging.debug("A observer has not been registered")
 
             return False
@@ -71,7 +75,7 @@ class Target(TargetObserver):
         """
 
         if observer in self.__observers:
-            
+
             logging.debug("An observer was removed")
 
             self.remove(observer)
@@ -83,28 +87,49 @@ class Target(TargetObserver):
             logging.debug("The observer alredy has registered")
 
             return False
-         
+
     def notify(self):
         """
         Notify all observers
         """
 
-        logging.debug("Send message for all observers") 
+        logging.debug("Send message for all observers")
 
         for observer in self.__observers:
             observer.update()
 
+class Observer(AbstractObserver):
+    """
+    Register a address for a POST method to be notified
+    """
+    pass
+
 class OrderObserver(APIView):
     """
-    Represent a post method in another service 
+    Represent a post method in another service
     """
 
-    def post(self, request):
+    def post(self, request, format=None):
         """
         Register a post method to another service
         """
 
-        pass
+        serializer = ObserverSerializer(data=request.data)
+
+        if serializer.is_valid():
+            logging.debug("A new observer was registered")
+
+            observer_object = serializer.save()
+            json_response = json.dumps({"observer_id": observer_object.id},
+                                       separators=(':', ','))
+
+            return Response(json_response)
+
+        else:
+
+            logging.debug("Someone try insert a observer in database")
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class OrderTarget(APIView):
     """
@@ -118,7 +143,7 @@ class OrderTarget(APIView):
         """
         Notify all observers
         """
-        
+
         for observer in observers:
             observer.update()
 
@@ -126,9 +151,9 @@ class OrderTarget(APIView):
         """
         Register a new observer
         """
-    
+
         response_status = None
-    
+
         if observer not in self.__observers:
             self.__observers.append(observer)
             response_status = status.HTTP_201_CREATE
