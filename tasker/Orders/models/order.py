@@ -44,6 +44,6 @@ class Order(models.Model):
 
     # state of a order in queue
     state = models.CharField(choices=ORDER_STATUS,
-                              max_length=12,
-                              default=WAITING_CONST)
+                             max_length=12,
+                             default=WAITING_CONST)
 
