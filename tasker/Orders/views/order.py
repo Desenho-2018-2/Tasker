@@ -14,7 +14,7 @@ from Orders.views.state import update_state
 class CRUDOrder(APIView):
     """
     This is the CRUD for Order models.
-    """ 
+    """
 
     def post(self, request, format=None):
         """
@@ -73,7 +73,7 @@ class CRUDOrder(APIView):
         pk = request.data['order_id']
 
         order_object = get_order(pk)
-        order_object.state = update_state(order_object.state)
+        order_object.state = update_state(order_object.state, order_object.pk)
         order_object.save()
 
         logging.debug("Order {} updated".format(pk))
