@@ -7,17 +7,34 @@ from abc import ABC, abstractmethod
 
 class TargetObserver(ABC):
     
+    @abstractmethod
     def attach(self):
+        """
+        Register a observer
+        """
         pass
+
+    @abstracmethod
     def detach(self):
+        """
+        Remove a observer
+        """
         pass
-
+    
+    @abstractmethod
     def notify(self):
+        """
+        Notify all observer registered
+        """
         pass
 
-class Observe(ABC):
+class Observer(ABC):
 
+    @abstractmethod
     def update(self):
+        """
+        Update a state of a observer
+        """
         pass
 
 class Target(TargetObserver):
