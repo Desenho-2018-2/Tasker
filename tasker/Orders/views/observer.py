@@ -3,6 +3,79 @@ import logging
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from abc import ABC, abstractmethod
+
+class TargetObserver(ABC):
+    
+    def attach(self):
+        pass
+    def detach(self):
+        pass
+
+    def notify(self):
+        pass
+
+class Observe(ABC):
+
+    def update(self):
+        pass
+
+class Target(TargetObserver):
+    """
+    Base interface for target observer
+    """
+
+    def __init__(self):
+        self.__observers = []
+
+    def attach(self, observer):
+        """
+        Register a observer
+        """
+
+        if observer not in self.__observers:
+
+            logging.debug("A observer was registered")
+
+            self.__observers.append(observer)
+
+            return True
+    
+        else:
+        
+            logging.debug("A observer has not been registered")
+
+            return False
+
+    def detach(self, observer):
+        """
+        Remove a observerd and return a boolean
+        if the function has success
+        """
+
+        if observer in self.__observers:
+            
+            logging.debug("An observer was removed")
+
+            self.remove(observer)
+
+            return True
+
+        else:
+
+            logging.debug("The observer alredy has registered")
+
+            return False
+         
+    def notify(self):
+        """
+        Notify all observers
+        """
+
+        logging.debug("Send message for all observers") 
+
+        for observer in self.__observers:
+            observer.update()
 
 class OrderObserver(APIView):
     """
@@ -21,9 +94,6 @@ class OrderTarget(APIView):
     Register, attach and detach observers
     """
 
-    class Meta:
-        abstract = True
-
     def __init__(self):
         self.__observers = []
 
@@ -35,7 +105,7 @@ class OrderTarget(APIView):
         for observer in observers:
             observer.update()
 
-    def attach(self, observer):
+    def post(self, observer):
         """
         Register a new observer
         """
@@ -50,7 +120,7 @@ class OrderTarget(APIView):
 
         return Response(status=response_status)
 
-    def detach(self, observer):
+    def delete(self, observer):
         """
         Remove a observer from the observer list
         """
