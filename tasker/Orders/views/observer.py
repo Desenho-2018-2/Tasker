@@ -2,15 +2,27 @@ import logging
 
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-class OrderObserver:
-    pass
+class OrderObserver(APIView):
+    """
+    Represent a post method in another service 
+    """
 
+    def post(self, request):
+        """
+        Register a post method to another service
+        """
 
-class OrderTarget:
+        pass
+
+class OrderTarget(APIView):
     """
     Register, attach and detach observers
     """
+
+    class Meta:
+        abstract = True
 
     def __init__(self):
         self.__observers = []
