@@ -35,7 +35,7 @@ class Order(models.Model):
     comentary = models.TextField(max_length=500)
 
     date = models.DateField(auto_now_add=True)
-    time = models.TimeField()
+    time = models.TimeField(auto_now_add=True)
 
     # TODO restrigir os valores do tipo
     order_type = models.CharField(choices=ORDER_TYPE,
