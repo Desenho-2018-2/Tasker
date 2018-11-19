@@ -2,6 +2,7 @@ import logging
 import json
 
 from Orders.serializers import ObserverSerializer
+from Orders.models.observer import Observer
 from abc import ABC, abstractmethod
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,6 +12,7 @@ class AbstractTarget(ABC):
     """
     Define a abstract with the methods for the target
     """
+
     @abstractmethod
     def attach(self):
         """
@@ -33,6 +35,9 @@ class AbstractTarget(ABC):
         pass
 
 class AbstractObserver(ABC):
+    """
+    Define a abstract with the methods for the observer
+    """
 
     @abstractmethod
     def update(self):
@@ -43,30 +48,45 @@ class AbstractObserver(ABC):
 
 class Target(AbstractTarget):
     """
-    Base interface for target observer
+    Get a pk of a Order and notify all observer 
+    the actual state of this Order
     """
 
-    def __init__(self):
-        self.__observers = []
+    def __update_register(self, pk):
+        """
+        Query all oders
+        """
+
+        query = Oders.objects.select_related('Observer').filter(pk=pk)
+
+        return query
+
+    def __init__(self, pk):
+        
+        # pk for Order model
+        self.__observers_pk_key = pk
+
+        # list with register observers
+        self.__observer = self.__update_register(pk)
 
     def attach(self, observer):
         """
         Register a observer
         """
 
-        if observer not in self.__observers:
+        verify_is_not_register = observer not in self.__observer
+
+        if verify_is_not_register:
 
             logging.debug("A observer was registered")
 
             self.__observers.append(observer)
 
-            return True
-
         else:
 
             logging.debug("A observer has not been registered")
 
-            return False
+        return verify_is_not_register
 
     def detach(self, observer):
         """
@@ -74,19 +94,20 @@ class Target(AbstractTarget):
         if the function has success
         """
 
-        if observer in self.__observers:
+        verify_is_register = observer in self.__observers
+
+        if verify_is_register:
 
             logging.debug("An observer was removed")
 
             self.remove(observer)
 
-            return True
-
         else:
 
             logging.debug("The observer alredy has registered")
 
-            return False
+        return verify_is_register
+
 
     def notify(self):
         """
@@ -102,8 +123,20 @@ class Observer(AbstractObserver):
     """
     Register a address for a POST method to be notified
     """
-    pass
 
+    def __init__(self, pk):
+        """
+        Create a observer class for the order pk
+        """
+
+        self.__model_pk = pk
+    
+    def update(self):
+        observer = Observer.objects.get(pk=self.__model_pk)
+
+        # TODO make this post the observer link
+        post = requests.post(observr.__str__, data={'teste', 'teste'})
+        
 class OrderObserver(APIView):
     """
     Represent a post method in another service

@@ -3,11 +3,12 @@ import logging
 import abc
 import requests
 
-from django.http import HttpResponse
 from Orders import models
-from Orders.models import Order, Observer, Target
+from Orders.models import Order, Observer
 from Orders.serializers import OrdersSerializer
+from Orders.views.observer import Observer
 from django.http import Http404
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -67,11 +68,18 @@ class CookingState(State):
 class DoneState(State):
 
     def handle(self):
-        target = Target.objects.filter(order=self.__model_pk)
-        for value in target:
-            observer = Observer.objects.get(value.observer)
-            post = requests.post(observer.__str__, data={"tua":"mae"})
+    
+        # target.notify(self.__model_pk)
+
+    
+        # target = Target.objects.filter(order=self.__model_pk)
+    
+        # for value in target:
+           #  observer = Observer.objects.get(value.observer)
+           #  post = requests.post(observer.__str__, data={"teste1":"teste2"})
+
         return models.PICKIT_CONST
+
 
 class PickitState(State):
     def handle(self):
