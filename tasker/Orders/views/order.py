@@ -72,7 +72,12 @@ class CRUDOrder(APIView):
 
         pk = request.data['order_id']
 
+        # StateTemplate(pk=1).update()
+        # StateTemplate(pk=2).cancel()
+
         order_object = get_order(pk)
+        # Chain(pk=pk).handle()
+        # Chain(pk=pk).cancl()
         order_object.state = update_state(order_object.state, order_object.pk)
         order_object.save()
 
