@@ -51,6 +51,9 @@ class AbstractTemplateOrderState(metaclass=ABCMeta):
         self.save(new_model_object)
 
 class CancelTemplateState(AbstractTemplateOrderState):
+    """
+    Template for Cancel State
+    """
     
     def state_operation(self, model_object):
         model_object.state = models.CANCEL_CONST
@@ -58,6 +61,9 @@ class CancelTemplateState(AbstractTemplateOrderState):
         return model_object
 
 class WaitTemplateState(AbstractTemplateOrderState):
+    """
+    Template for Wait State
+    """
         
     def state_operation(self, model_object):
         model_object.state = models.COOKING_CONST
@@ -65,13 +71,19 @@ class WaitTemplateState(AbstractTemplateOrderState):
         return model_object
 
 class CookingTemplateState(AbstractTemplateOrderState):
-    
+    """
+    Template for Cooking State
+    """
+
     def state_operation(self, model_object):
         model_object.state = models.DONE_CONST
 
         return model_object
 
 class DoneTemplateState(AbstractTemplateOrderState):
+    """
+    Template for Done State
+    """
     
     def state_operation(self, model_object):
        model_object.state = models.PICKIT_CONST
@@ -79,6 +91,9 @@ class DoneTemplateState(AbstractTemplateOrderState):
        return model_object
 
 class PickitTemplateState(AbstractTemplateOrderState):
+    """
+    Template for PickIt State
+    """
 
     def state_operation(self, model_object):
         model_object.state = models.CLOSE_CONST
@@ -86,6 +101,9 @@ class PickitTemplateState(AbstractTemplateOrderState):
         return model_object 
 
 class CloseTemplateState(AbstractTemplateOrderState):
+    """
+    Template for Close State
+    """
     
     def state_operation(self, model_object):
         model_object.state = models.CLOSE_CONST
