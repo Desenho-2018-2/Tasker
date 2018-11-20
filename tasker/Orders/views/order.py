@@ -1,16 +1,13 @@
 import json
 import logging
-import abc
 
-from Orders import models
-from Orders.views.chain import UpdateChain
+from Orders.views.chain import UpdateChain, HandleRequestStateChain
 from Orders.models import Order
 from Orders.serializers import OrdersSerializer
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from Orders.views.state import update_state
 
 class CRUDOrder(APIView):
     """
@@ -58,25 +55,43 @@ class CRUDOrder(APIView):
         Delete a order in the database
         """
 
-        pk = request.data['delete_order_id']
+        response_status = status.HTTP_204_NO_CONTENT
 
-        order_object = get_order(pk)
-        order_object.state = CancelState().handle()
-        order_object.save()
+        try:
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            pk = request.data['delete_order_id']
+
+            HandleRequestStateChain().handle_request('CANCEL', pk)
+
+            logging.debug("The Order {} has canceled".format(pk))
+
+        except KeyError:
+            logging.error("Json don't has delete_order_id field")
+
+            response_status = status.HTTP_400_BAD_REQUEST
+
+
+        return Response(status=response_status)
 
     def put(self, request, format=None):
         """
         Update a order in database
         """
 
-        pk = request.data['order_id']
+        response_status = status.HTTP_204_NO_CONTENT
 
-        UpdateChain().handle_request(pk=pk)
+        try:
+            pk = request.data['order_id']
 
-        logging.debug("Order {} updated".format(pk))
-        return Response("Order with id {} update successful!".format(pk))
+            UpdateChain().handle_request(pk=pk)
+
+            logging.debug("Order {} updated".format(pk))
+
+        except KeyError:
+            response_status = status.HTTP_400_BAD_REQUEST
+
+        return Response("Order with id {} update successful!".format(pk),
+                        status=response_status)
 
 
 def get_order(pk):
