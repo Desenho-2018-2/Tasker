@@ -1,7 +1,7 @@
 import json
 import logging
 
-from Orders.views.chain import UpdateChain
+from Orders.views.chain import UpdateChain, HandleRequestStateChain
 from Orders.models import Order
 from Orders.serializers import OrdersSerializer
 from django.http import Http404
@@ -57,9 +57,7 @@ class CRUDOrder(APIView):
 
         pk = request.data['delete_order_id']
 
-        order_object = get_order(pk)
-        order_object.state = CancelState().handle()
-        order_object.save()
+        HandleRequestStateChain().handle_request('CANCEL', pk)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
