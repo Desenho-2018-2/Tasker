@@ -2,6 +2,7 @@ version: '3'
 
 services:
   dev:
+    container_name: tasker
     build:
       context: . 
       dockerfile: dockers/dev/Dockerfile 
