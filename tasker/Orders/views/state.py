@@ -1,17 +1,8 @@
-import json
 import logging
 import abc
-import requests
 
 from Orders import models
-from Orders.models import Order, Observer
-from Orders.serializers import OrdersSerializer
-from Orders.views.observer import Observer
-from django.http import Http404
-from django.http import HttpResponse
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from Orders.models import Order
 from abc import abstractmethod, ABCMeta
 
 class AbstractTemplateOrderState(metaclass=ABCMeta):

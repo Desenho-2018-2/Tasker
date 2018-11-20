@@ -3,7 +3,6 @@ import json
 
 from Orders.serializers import ObserverSerializer
 from Orders.models.observer import Observer
-from Orders.models import Order
 from abc import ABC, abstractmethod
 from rest_framework import status
 from rest_framework.response import Response
