@@ -35,7 +35,7 @@ class Order(models.Model):
     comentary = models.TextField(max_length=500)
 
     date = models.DateField(auto_now_add=True)
-    time = models.TimeField()
+    time = models.TimeField(auto_now_add=True)
 
     # TODO restrigir os valores do tipo
     order_type = models.CharField(choices=ORDER_TYPE,
@@ -44,6 +44,6 @@ class Order(models.Model):
 
     # state of a order in queue
     state = models.CharField(choices=ORDER_STATUS,
-                              max_length=12,
-                              default=WAITING_CONST)
+                             max_length=12,
+                             default=WAITING_CONST)
 

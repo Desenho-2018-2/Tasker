@@ -2,10 +2,11 @@ version: '3'
 
 services:
   dev:
+    container_name: tasker
     build:
       context: . 
       dockerfile: dockers/dev/Dockerfile 
-    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8080"
+    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate --run-syncdb && python3 manage.py runserver 0.0.0.0:8080"
     volumes:
         - ./tasker/:/home
     ports:
