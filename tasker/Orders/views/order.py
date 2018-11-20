@@ -3,13 +3,14 @@ import logging
 import abc
 
 from Orders import models
+from Orders.views.chain import UpdateChain
 from Orders.models import Order
 from Orders.serializers import OrdersSerializer
 from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from Orders.views.state import update_state
+# from Orders.views.state import update_state
 
 class CRUDOrder(APIView):
     """
@@ -72,14 +73,7 @@ class CRUDOrder(APIView):
 
         pk = request.data['order_id']
 
-        # StateTemplate(pk=1).update()
-        # StateTemplate(pk=2).cancel()
-
-        order_object = get_order(pk)
-        # Chain(pk=pk).handle()
-        # Chain(pk=pk).cancl()
-        order_object.state = update_state(order_object.state, order_object.pk)
-        order_object.save()
+        UpdateChain().handle_request(pk=pk)
 
         logging.debug("Order {} updated".format(pk))
         return Response("Order with id {} update successful!".format(pk))
