@@ -1,3 +1,5 @@
+import logging 
+
 from os.path import join
 from django.db import models
 from Orders.models import Order
@@ -15,7 +17,12 @@ class Observer(models.Model):
                                     blank=True)
 
     def __str__(self):
-        return join(self.ip, str(self.port), self.link)
+
+        string_response = join(self.ip + ':'  + str(self.port), self.link)
+
+        logging.warn(string_response)
+        
+        return string_response
 
     class Meta:
         unique_together = (('ip', 'port', 'link'))
