@@ -4,6 +4,7 @@ import abc
 from Orders import models
 from Orders.models import Order
 from abc import abstractmethod, ABCMeta
+from Orders.views.observer import Target
 
 class AbstractTemplateOrderState(metaclass=ABCMeta):
     """
@@ -78,6 +79,9 @@ class DoneTemplateState(AbstractTemplateOrderState):
     
     def state_operation(self, model_object):
        model_object.state = models.PICKIT_CONST
+
+       # Notify all observer 
+       Target(model_object.pk).notify()
 
        return model_object
 
