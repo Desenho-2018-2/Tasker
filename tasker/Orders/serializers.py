@@ -16,8 +16,7 @@ class ObserverSerializer(serializers.ModelSerializer):
     Serializer for the Observer model class
     """
 
-    orders = serializers.PrimaryKeyRelatedField(many=True,
-                                                read_only=True)
+    orders = serializers.PrimaryKeyRelatedField(many=True, queryset=Order.objects.all())
 
     class Meta:
         model = Observer
