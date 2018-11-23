@@ -1,8 +1,9 @@
 import logging
 import json
+import requests
 
 from Orders.serializers import ObserverSerializer
-from Orders.models.observer import Observer as obs
+from Orders.models.observer import Observer
 from Orders.models.order import Order
 from abc import ABC, abstractmethod
 from rest_framework import status
@@ -33,6 +34,25 @@ class AbstractObserver(ABC):
         """
         pass
 
+class OrderObserver(AbstractObserver):
+    """
+    Register a address for a POST method to be notified
+    """
+
+    def __init__(self, pk):
+        """
+        Create a observer class for the order pk
+        """
+
+        self.__model_pk = pk
+        self.__observer = Observer.objects.get(pk=self.__model_pk)
+    
+    def update(self):
+
+        # TODO Change test data to payload 
+        post = requests.post(self.__observer.__str__,
+                             data={'teste', 'teste'})
+        
 class Target(AbstractTarget):
     """
     Get a pk of a Order and notify all observer 
@@ -67,34 +87,17 @@ class Target(AbstractTarget):
         logging.debug("Send message for all observers")
 
         for observer in self.__observers:
-            observer.update()
-
-class Observer(AbstractObserver):
-    """
-    Register a address for a POST method to be notified
-    """
-
-    def __init__(self, pk):
-        """
-        Create a observer class for the order pk
-        """
-
-        self.__model_pk = pk
-    
-    def update(self):
-        observer = Observer.objects.get(pk=self.__model_pk)
-
-        # TODO Change test data to payload 
-        post = requests.post(observr.__str__, data={'teste', 'teste'})
         
-class OrderObserver(APIView):
+            OrderObserver(pk=observer.pk).update()
+
+class OrderObserverView(APIView):
     """
     Represent a post method in another service
     """
 
     def get(self, request, format=None):
 
-        query = obs.objects.all()
+        query = Observer.objects.all()
 
         response = ObserverSerializer(query, many=True)
 
