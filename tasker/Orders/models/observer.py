@@ -18,7 +18,7 @@ class Observer(models.Model):
 
     def __str__(self):
 
-        string_response = join(self.ip + ':'  + str(self.port), self.link)
+        string_response = 'http//' + join(self.ip + ':'  + str(self.port), self.link)
 
         logging.warn(string_response)
         
