@@ -26,7 +26,7 @@ class Order(models.Model):
                   (FOOD_TYPE, 'FOOD'))
 
     # project id from extern service
-    product_id = models.IntegerField()
+    product = models.IntegerField()
 
     # source table
     table = models.IntegerField()

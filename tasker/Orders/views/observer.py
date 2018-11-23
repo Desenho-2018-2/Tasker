@@ -2,13 +2,15 @@ import logging
 import json
 import requests
 
-from Orders.serializers import ObserverSerializer
+from Orders.serializers import ObserverSerializer, OrderObserverSerializer
 from Orders.models.observer import Observer
 from Orders.models.order import Order
 from abc import ABC, abstractmethod
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+logging.basicConfig(level=logging.DEBUG)
 
 class AbstractTarget(ABC):
     """
@@ -47,11 +49,16 @@ class OrderObserver(AbstractObserver):
         self.__model_pk = pk
         self.__observer = Observer.objects.get(pk=self.__model_pk)
     
-    def update(self):
+    def update(self, order_pk):
 
-        # TODO Change test data to payload 
-        post = requests.post(self.__observer.__str__,
-                             data={'teste', 'teste'})
+        order_model = Order.objects.get(pk=order_pk)
+        payload = OrderObserverSerializer(order_model).data
+
+
+        logging.debug("Send a POST package to %s", self.__observer.__str__())
+
+        post = requests.post(self.__observer.__str__(),
+                             data=payload)
         
 class Target(AbstractTarget):
     """
@@ -88,7 +95,7 @@ class Target(AbstractTarget):
 
         for observer in self.__observers:
         
-            OrderObserver(pk=observer.pk).update()
+            OrderObserver(pk=observer.pk).update(observer.pk)
 
 class OrderObserverView(APIView):
     """
