@@ -10,5 +10,5 @@ services:
     volumes:
         - ./tasker/:/home
     ports:
-        - 8080:8080  # All usage
+        - 8081:8080  # All usage
         - 5000:5000  # A extra port

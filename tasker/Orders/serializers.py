@@ -16,9 +16,22 @@ class ObserverSerializer(serializers.ModelSerializer):
     Serializer for the Observer model class
     """
 
-    orders = serializers.PrimaryKeyRelatedField(many=True,
-                                                read_only=True)
+    orders = serializers.PrimaryKeyRelatedField(many=True, queryset=Order.objects.all())
 
     class Meta:
         model = Observer
         fields = '__all__'
+
+class OrderObserverSerializer(serializers.ModelSerializer):
+    """
+    Serializer a order for response when you update observers
+    """
+
+    class Meta:
+        model = Order
+        fields = ('state',
+                  'time',
+                  'date',
+                  'product',
+                  'order_type',
+                  'table')

@@ -41,7 +41,7 @@ class HandleRequestStateChain(AbstractChain):
             raise Exception('NOT A VALID STATE')
         
 
-class UpdateChain(HandleRequestStateChain):
+class UpdateChain(AbstractChain):
     """
     Redirect the responsability for a State class
     """

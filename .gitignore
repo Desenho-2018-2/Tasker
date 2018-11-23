@@ -5,3 +5,4 @@ teste_env/
 tasker/db.sqlite3
 tasker/Orders/migrations/*
 tasker/tasker/migrations/*
+*.log
