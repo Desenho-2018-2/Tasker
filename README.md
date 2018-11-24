@@ -10,4 +10,9 @@ Restful API for Order Queue
 
 ```
   sudo docker-compose up dev
+  
 ```
+
+# Buscando na documentaçao
+
+A documentação de toda a API está listada no endereço *localhost:8081/docs" (caso não se altere o docker-compose".
